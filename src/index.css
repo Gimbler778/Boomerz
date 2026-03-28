@@ -1,0 +1,25 @@
+@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-headline: "Archivo Black", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+}
+
+@layer base {
+  :root {
+    color-scheme: only light;
+  }
+
+  body {
+    @apply m-0 font-body text-zinc-900 antialiased selection:bg-orange-300/60;
+  }
+
+  h1,
+  h2,
+  h3,
+  h4 {
+    @apply font-headline;
+  }
+}
