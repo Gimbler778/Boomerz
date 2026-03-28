@@ -114,6 +114,43 @@
   .brainrot-rain-word-layer .brainrot-rain-item:nth-child(11) { left: 94%; animation-delay: -6.8s; animation-duration: 14.9s; }
   .brainrot-rain-word-layer .brainrot-rain-item:nth-child(12) { left: 98%; animation-delay: -12.1s; animation-duration: 16.3s; }
 
+  .emoji-confetti-burst {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+
+  .emoji-confetti-piece {
+    position: absolute;
+    right: 3.5rem;
+    bottom: 1.1rem;
+    font-size: 1.1rem;
+    opacity: 0;
+    animation-name: emoji-confetti-pop;
+    animation-duration: 950ms;
+    animation-fill-mode: forwards;
+    animation-timing-function: cubic-bezier(0.25, 0.9, 0.3, 1);
+    filter: drop-shadow(0 0 6px rgba(180, 130, 255, 0.5));
+  }
+
+  .emoji-confetti-piece:nth-child(1) { --tx: -130px; --ty: -115px; --rot: -25deg; animation-delay: 0ms; }
+  .emoji-confetti-piece:nth-child(2) { --tx: -95px; --ty: -138px; --rot: -8deg; animation-delay: 30ms; }
+  .emoji-confetti-piece:nth-child(3) { --tx: -62px; --ty: -122px; --rot: 12deg; animation-delay: 60ms; }
+  .emoji-confetti-piece:nth-child(4) { --tx: -36px; --ty: -146px; --rot: 28deg; animation-delay: 90ms; }
+  .emoji-confetti-piece:nth-child(5) { --tx: -8px; --ty: -128px; --rot: -14deg; animation-delay: 120ms; }
+  .emoji-confetti-piece:nth-child(6) { --tx: 18px; --ty: -150px; --rot: 22deg; animation-delay: 150ms; }
+  .emoji-confetti-piece:nth-child(7) { --tx: 42px; --ty: -134px; --rot: -18deg; animation-delay: 180ms; }
+  .emoji-confetti-piece:nth-child(8) { --tx: 66px; --ty: -148px; --rot: 16deg; animation-delay: 210ms; }
+  .emoji-confetti-piece:nth-child(9) { --tx: -118px; --ty: -92px; --rot: 19deg; animation-delay: 240ms; }
+  .emoji-confetti-piece:nth-child(10) { --tx: -80px; --ty: -96px; --rot: -21deg; animation-delay: 270ms; }
+  .emoji-confetti-piece:nth-child(11) { --tx: -44px; --ty: -88px; --rot: 13deg; animation-delay: 300ms; }
+  .emoji-confetti-piece:nth-child(12) { --tx: -12px; --ty: -102px; --rot: -16deg; animation-delay: 330ms; }
+  .emoji-confetti-piece:nth-child(13) { --tx: 24px; --ty: -90px; --rot: 15deg; animation-delay: 360ms; }
+  .emoji-confetti-piece:nth-child(14) { --tx: 56px; --ty: -105px; --rot: -9deg; animation-delay: 390ms; }
+  .emoji-confetti-piece:nth-child(15) { --tx: 84px; --ty: -86px; --rot: 18deg; animation-delay: 420ms; }
+  .emoji-confetti-piece:nth-child(16) { --tx: 110px; --ty: -96px; --rot: -12deg; animation-delay: 450ms; }
+
   .glass-card {
     background: rgba(31, 31, 35, 0.6);
     -webkit-backdrop-filter: blur(24px);
@@ -175,5 +212,25 @@
   100% {
     transform: translate3d(-6px, 122vh, 0) rotate(15deg) scale(0.96);
     opacity: 0;
+  }
+}
+
+@keyframes emoji-confetti-pop {
+  0% {
+    opacity: 0;
+    transform: translate3d(0, 0, 0) scale(0.75) rotate(0deg);
+  }
+
+  10% {
+    opacity: 1;
+  }
+
+  85% {
+    opacity: 0.95;
+  }
+
+  100% {
+    opacity: 0;
+    transform: translate3d(var(--tx), var(--ty), 0) scale(1.06) rotate(var(--rot));
   }
 }

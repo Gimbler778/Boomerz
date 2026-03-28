@@ -1,8 +1,8 @@
-# BOOMERZ - Brainrot Translator
+# BOMMERZ - Brainrot Translator
 
-![Boomerz Brainrot Banner](public/brainrot-banner.svg)
+![Bommerz Brainrot Banner](public/brainrot-banner.svg)
 
-Boomerz is a full-stack translator that converts normal text into brainrot slang and back to human-readable text, with style controls, intensity levels, and voice playback.
+Bommerz is a full-stack translator that converts normal text into brainrot slang and back to human-readable text, with style controls, intensity levels, and voice playback.
 
 ## Features
 

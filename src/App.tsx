@@ -2,7 +2,7 @@ import React, { useMemo, useRef, useState } from 'react';
 import {
   ArrowLeftRight,
   Copy,
-  Share,
+  PartyPopper,
   Brain,
   Languages,
   BookOpen,
@@ -24,6 +24,30 @@ import { AboutPage } from './pages/AboutPage';
 
 type SpeechSource = 'input' | 'output';
 
+const TAG_POOL = [
+  '#gyatt',
+  '#rizz',
+  '#mewing',
+  '#looksmaxxing',
+  '#mogged',
+  '#skibidi',
+  '#fanumtax',
+  '#delulu',
+  '#sigma',
+  '#aura',
+  '#ratio',
+  '#cook',
+  '#npc',
+  '#ohio',
+];
+
+const CONFETTI_EMOJI_POOL = ['💀', '🤡', '🔥', '🧠', '🗿', '⚡', '😝', '😈', '🎉', '✨', '💫', '🚀'];
+
+function pickRandomItems(source: string[], count: number) {
+  const shuffled = [...source].sort(() => Math.random() - 0.5);
+  return shuffled.slice(0, Math.min(count, shuffled.length));
+}
+
 export default function App() {
   const location = useLocation();
   const currentPath = location.pathname;
@@ -40,6 +64,9 @@ export default function App() {
   const [speechSource, setSpeechSource] = useState<SpeechSource>('output');
   const [error, setError] = useState('');
   const [status, setStatus] = useState('');
+  const [tagChips, setTagChips] = useState<string[]>(() => pickRandomItems(TAG_POOL, 7));
+  const [confettiTick, setConfettiTick] = useState(0);
+  const [confettiEmojis, setConfettiEmojis] = useState<string[]>(() => pickRandomItems(CONFETTI_EMOJI_POOL, 16));
   const audioRef = useRef<HTMLAudioElement | null>(null);
 
   const brainrotRainEmojiItems = useMemo(
@@ -146,6 +173,13 @@ export default function App() {
     }
   };
 
+  const runEmojiConfetti = () => {
+    setConfettiEmojis(pickRandomItems(CONFETTI_EMOJI_POOL, 16));
+    setConfettiTick((value) => value + 1);
+    setTagChips(pickRandomItems(TAG_POOL, 7));
+    setStatus('Emoji confetti launched. Tags refreshed.');
+  };
+
   const renderPageContent = () => {
     if (currentPath === '/dictionary') return <DictionaryPage />;
     if (currentPath === '/styles') return <StylesPage />;
@@ -193,7 +227,7 @@ export default function App() {
             <div className="h-8 w-8 rounded-xl bg-primary/20 border border-primary/30 flex items-center justify-center">
               <Brain size={16} className="text-primary" />
             </div>
-            <p className="font-headline text-lg font-extrabold uppercase tracking-[0.12em] text-primary">Boomerz</p>
+            <p className="font-headline text-lg font-extrabold uppercase tracking-[0.12em] text-primary">Bommerz</p>
           </div>
           <nav className="mt-3 flex gap-2 overflow-x-auto pb-1">
             <Link
@@ -251,7 +285,7 @@ export default function App() {
               <Brain size={24} className="text-primary" />
             </div>
             <div>
-              <p className="font-headline text-xl font-extrabold uppercase tracking-[0.12em] text-primary">Boomerz</p>
+              <p className="font-headline text-xl font-extrabold uppercase tracking-[0.12em] text-primary">Bommerz</p>
               <p className="font-label text-[10px] uppercase tracking-[0.2em] text-on-surface-variant">Vibe Console</p>
             </div>
           </div>
@@ -441,7 +475,7 @@ export default function App() {
                   )}>
                     {outputText || 'Click Translate to generate output.'}
                   </div>
-                  <div className="absolute left-3 right-3 sm:left-auto sm:right-4 bottom-3 sm:bottom-4 flex flex-wrap sm:flex-nowrap items-center justify-end gap-2.5">
+                  <div className="mt-3 flex flex-wrap items-center justify-end gap-2.5">
                     <label className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-surface-container-highest/90 text-on-surface text-[10px] font-label border border-outline-variant/20 min-h-10">
                       <span className="shrink-0 text-on-surface-variant">Src</span>
                       <select
@@ -455,6 +489,15 @@ export default function App() {
                         <option value="input" className="bg-surface-container">In</option>
                       </select>
                     </label>
+
+                    <button
+                      onClick={() => setOutputText('')}
+                      aria-label="Clear output"
+                      title="Clear output"
+                      className="px-3 h-10 bg-surface-container-highest/80 hover:bg-error/20 rounded-full text-on-surface transition-all border border-outline-variant/20 hover:border-error/50 flex items-center justify-center font-label text-[10px] uppercase tracking-wider"
+                    >
+                      Clear
+                    </button>
 
                     <button
                       onClick={playVoice}
@@ -474,9 +517,24 @@ export default function App() {
                     >
                       <Copy size={16} />
                     </button>
-                    <button aria-label="Share output" title="Share output" className="h-10 w-10 bg-surface-container-highest/80 hover:bg-primary/20 rounded-full text-on-surface transition-all border border-outline-variant/20 hover:border-primary/50 flex items-center justify-center">
-                      <Share size={16} />
+
+                    <button
+                      onClick={runEmojiConfetti}
+                      aria-label="Launch emoji confetti"
+                      title="Launch emoji confetti"
+                      className="h-10 px-3 bg-surface-container-highest/80 hover:bg-secondary/20 rounded-full text-on-surface transition-all border border-outline-variant/20 hover:border-secondary/50 flex items-center justify-center gap-1.5"
+                    >
+                      <PartyPopper size={15} />
+                      <span className="font-label text-[10px] uppercase tracking-wider">Magic</span>
                     </button>
+                  </div>
+
+                  <div key={confettiTick} className="emoji-confetti-burst" aria-hidden>
+                    {confettiEmojis.map((emoji, index) => (
+                      <span key={`${emoji}-${index}`} className="emoji-confetti-piece">
+                        {emoji}
+                      </span>
+                    ))}
                   </div>
                 </div>
               </div>
@@ -489,7 +547,7 @@ export default function App() {
               ) : null}
 
               <div className="mt-12 flex flex-wrap gap-3">
-                {['#gyatt', '#rizz', '#mewing', '#looksmaxxing', '#mogged', '#skibidi', '#fanumtax'].map((tag) => (
+                {tagChips.map((tag) => (
                   <span key={tag} className="bg-surface-container-lowest px-4 py-1.5 rounded-full text-primary font-label text-xs border border-primary/10">
                     {tag}
                   </span>
@@ -514,7 +572,7 @@ export default function App() {
 
       <footer className="relative z-10 w-full py-10 px-4 bg-transparent max-w-7xl mx-auto flex flex-col items-center gap-2 mt-auto text-center">
         <p className="font-label text-[10px] sm:text-xs uppercase tracking-[0.16em] text-primary">
-          Boomerz cooked up by Gimbler fr fr no cap, brainrot certified.
+          Bommerz cooked up by Gimbler fr fr no cap, brainrot certified.
         </p>
       </footer>
     </div>
