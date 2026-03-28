@@ -1,0 +1,49 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="520" viewBox="0 0 1600 520" role="img" aria-label="Boomerz Brainrot Banner">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0%" stop-color="#05060d"/>
+      <stop offset="55%" stop-color="#090a16"/>
+      <stop offset="100%" stop-color="#0d0820"/>
+    </linearGradient>
+    <linearGradient id="glow" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%" stop-color="#a973ff"/>
+      <stop offset="45%" stop-color="#e07aff"/>
+      <stop offset="100%" stop-color="#53d8ff"/>
+    </linearGradient>
+    <filter id="softGlow" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="12" result="blur"/>
+      <feMerge>
+        <feMergeNode in="blur"/>
+        <feMergeNode in="SourceGraphic"/>
+      </feMerge>
+    </filter>
+  </defs>
+
+  <rect width="1600" height="520" fill="url(#bg)"/>
+
+  <circle cx="220" cy="120" r="180" fill="#8d4bff" opacity="0.18"/>
+  <circle cx="1400" cy="420" r="220" fill="#22c7ff" opacity="0.14"/>
+  <circle cx="820" cy="-40" r="210" fill="#ff68e6" opacity="0.1"/>
+
+  <g opacity="0.38" fill="#c28dff" font-family="Chakra Petch, Segoe UI, Arial, sans-serif" font-size="34" font-weight="700">
+    <text x="90" y="90">skibidi</text>
+    <text x="280" y="450">rizz</text>
+    <text x="1420" y="120">gyatt</text>
+    <text x="1200" y="390">fanum tax</text>
+    <text x="640" y="455">mogged</text>
+  </g>
+
+  <g filter="url(#softGlow)">
+    <text x="94" y="250" fill="url(#glow)" font-family="Bungee, Impact, sans-serif" font-size="104" letter-spacing="2">BOOMERZ</text>
+  </g>
+
+  <text x="96" y="312" fill="#e8dbff" font-family="Sora, Segoe UI, Arial, sans-serif" font-size="31" font-weight="600" opacity="0.95">
+    Brainrot Translator • Translate • Voice • Dictionary • Styles
+  </text>
+
+  <g font-family="Segoe UI Emoji, Apple Color Emoji, Noto Color Emoji, sans-serif" font-size="64" opacity="0.9">
+    <text x="1260" y="268">💀</text>
+    <text x="1338" y="268">🧠</text>
+    <text x="1416" y="268">🗿</text>
+  </g>
+</svg>

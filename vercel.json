@@ -1,0 +1,10 @@
+{
+  "version": 2,
+  "buildCommand": "npm run build",
+  "outputDirectory": "dist",
+  "rewrites": [
+    { "source": "/translate", "destination": "/api/translate" },
+    { "source": "/voice", "destination": "/api/voice" },
+    { "source": "/health", "destination": "/api/health" }
+  ]
+}
