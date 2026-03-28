@@ -1,24 +1,35 @@
 export function AboutPage() {
   return (
     <section className="mx-auto w-full max-w-6xl px-5 py-8">
-      <div className="rounded-3xl border border-black/10 bg-white p-6 shadow-[0_20px_50px_-30px_rgba(0,0,0,0.6)] sm:p-8">
-        <h2 className="text-2xl font-black uppercase tracking-[0.12em] text-zinc-900">About This Project</h2>
-        <p className="mt-3 text-sm leading-relaxed text-zinc-700">
-          Bommerz is a full-stack translator app that converts text between standard English and internet brainrot slang.
-          It uses a React frontend with Tailwind CSS, a Node.js + Express backend, optional OpenAI translation, and
-          ElevenLabs text-to-speech for voice playback.
+      <div className="glass-card rounded-3xl border border-primary/15 bg-surface-container-low/75 p-6 shadow-[0_24px_60px_-28px_rgba(0,0,0,0.9)] sm:p-8">
+        <h2 className="text-2xl font-black uppercase tracking-[0.12em] text-primary">About The Brainrot Project</h2>
+        <p className="mt-3 text-sm leading-relaxed text-on-surface-variant">
+          Bommerz is a full-stack brainrot translator that converts normal text into meme-chaotic slang and back to
+          readable human language. The goal is simple: give users a fast "vibe switch" between clean communication
+          and maximum internet energy.
         </p>
 
         <div className="mt-6 grid gap-4 sm:grid-cols-2">
-          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-            <h3 className="text-xs font-black uppercase tracking-[0.14em] text-zinc-700">Backend Endpoints</h3>
-            <p className="mt-2 text-sm text-zinc-700">POST /translate, POST /voice, GET /health</p>
+          <div className="rounded-xl border border-outline-variant/30 bg-surface-container/70 p-4">
+            <h3 className="text-xs font-black uppercase tracking-[0.14em] text-secondary">Core Vibe Engine</h3>
+            <p className="mt-2 text-sm text-on-surface-variant">
+              Brainrot style filters (Gen Z, Sigma, NPC, Meme overload), intensity levels from mild to cursed, and
+              one-click translation to keep output aligned with your selected aura.
+            </p>
           </div>
-          <div className="rounded-xl border border-zinc-200 bg-zinc-50 p-4">
-            <h3 className="text-xs font-black uppercase tracking-[0.14em] text-zinc-700">Highlights</h3>
-            <p className="mt-2 text-sm text-zinc-700">Live typing interaction, style controls, intensity modes, and copy-to-clipboard.</p>
+
+          <div className="rounded-xl border border-outline-variant/30 bg-surface-container/70 p-4">
+            <h3 className="text-xs font-black uppercase tracking-[0.14em] text-secondary">Speech + Stack</h3>
+            <p className="mt-2 text-sm text-on-surface-variant">
+              Voice modes for Crazy, Sigma, and Xomu delivery using ElevenLabs with browser fallback, backed by a
+              React + Tailwind frontend and Express API endpoints: POST /translate, POST /voice, GET /health.
+            </p>
           </div>
         </div>
+
+        <p className="mt-6 rounded-xl border border-primary/30 bg-primary/10 px-4 py-3 text-sm text-primary">
+          Project Motto: Stay locked in, keep the translation bussin, and never lose the plot to raw brainrot.
+        </p>
       </div>
     </section>
   );

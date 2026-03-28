@@ -1,25 +1,179 @@
-@import url('https://fonts.googleapis.com/css2?family=Archivo+Black&family=IBM+Plex+Sans:wght@400;500;600;700&family=Space+Mono:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Bungee:wght@400&family=Chakra+Petch:wght@400;500;600;700&family=Sora:wght@400;500;600;700&display=swap');
 @import "tailwindcss";
 
 @theme {
-  --font-headline: "Archivo Black", ui-sans-serif, system-ui, sans-serif;
-  --font-body: "IBM Plex Sans", ui-sans-serif, system-ui, sans-serif;
-  --font-label: "Space Mono", ui-monospace, SFMono-Regular, monospace;
+  --font-headline: "Bungee", ui-sans-serif, system-ui, sans-serif;
+  --font-body: "Sora", ui-sans-serif, system-ui, sans-serif;
+  --font-label: "Chakra Petch", ui-monospace, SFMono-Regular, monospace;
+
+  --color-background: #0e0e11;
+  --color-surface: #0e0e11;
+  --color-surface-bright: #2c2c30;
+  --color-surface-dim: #0e0e11;
+  --color-surface-container-lowest: #000000;
+  --color-surface-container-low: #131316;
+  --color-surface-container: #19191d;
+  --color-surface-container-high: #1f1f23;
+  --color-surface-container-highest: #25252a;
+
+  --color-primary: #cc97ff;
+  --color-primary-dim: #9c48ea;
+  --color-on-primary: #47007c;
+
+  --color-secondary: #00cffc;
+  --color-secondary-dim: #00c0ea;
+  --color-on-secondary: #004050;
+
+  --color-tertiary: #ff59e3;
+  --color-on-surface: #f0edf1;
+  --color-on-surface-variant: #acaaae;
+  --color-outline: #767579;
+  --color-outline-variant: #48474b;
+
+  --color-error: #ff6e84;
 }
 
 @layer base {
-  :root {
-    color-scheme: only light;
-  }
-
   body {
-    @apply m-0 font-body text-zinc-900 antialiased selection:bg-orange-300/60;
+    @apply bg-background text-on-surface font-body selection:bg-primary/30;
+  }
+}
+
+@layer utilities {
+  .control-pill {
+    @apply flex min-h-11 items-center gap-2 rounded-xl border border-outline-variant/25 bg-surface-container-high/75 px-3 shadow-[inset_0_0_0_1px_rgba(204,151,255,0.06)];
   }
 
-  h1,
-  h2,
-  h3,
-  h4 {
-    @apply font-headline;
+  .control-pill-intensity {
+    @apply flex-col items-stretch justify-center gap-2.5 py-2;
+  }
+
+  .neon-select {
+    @apply min-h-8 w-full cursor-pointer rounded-lg border border-outline-variant/20 bg-surface-container-low px-2.5 py-1.5 text-sm font-semibold tracking-[0.06em] text-on-surface outline-none transition focus:border-secondary/50;
+  }
+
+  .brainrot-rain-item {
+    position: absolute;
+    top: -12%;
+    color: rgba(221, 184, 255, 0.95);
+    text-shadow:
+      0 1px 0 rgba(8, 8, 12, 0.96),
+      0 0 8px rgba(174, 119, 255, 0.4);
+    font-family: var(--font-label);
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    animation-timing-function: linear;
+    animation-iteration-count: infinite;
+    transition: opacity 180ms ease, filter 180ms ease;
+    white-space: nowrap;
+    -webkit-user-select: none;
+    user-select: none;
+    opacity: 0.84;
+  }
+
+  .brainrot-rain-word {
+    font-family: var(--font-label);
+    text-transform: lowercase;
+    animation-name: brainrot-rain-fall-word;
+    animation-duration: 16s;
+  }
+
+  .brainrot-rain-emoji {
+    font-family: var(--font-body);
+    animation-name: brainrot-rain-fall-emoji;
+    animation-duration: 11s;
+    filter: drop-shadow(0 0 6px rgba(130, 200, 255, 0.32));
+  }
+
+  .brainrot-rain-layer {
+    position: absolute;
+    inset: 0;
+  }
+
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(1) { left: 4%; animation-delay: -1.5s; animation-duration: 10.5s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(2) { left: 14%; animation-delay: -5.5s; animation-duration: 12s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(3) { left: 25%; animation-delay: -2.2s; animation-duration: 11.2s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(4) { left: 36%; animation-delay: -7.3s; animation-duration: 13s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(5) { left: 48%; animation-delay: -3.8s; animation-duration: 10.8s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(6) { left: 60%; animation-delay: -8.6s; animation-duration: 12.6s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(7) { left: 71%; animation-delay: -4.4s; animation-duration: 11.4s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(8) { left: 81%; animation-delay: -9.7s; animation-duration: 13.3s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(9) { left: 90%; animation-delay: -6.1s; animation-duration: 10.9s; }
+  .brainrot-rain-emoji-layer .brainrot-rain-item:nth-child(10) { left: 96%; animation-delay: -11.2s; animation-duration: 12.9s; }
+
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(1) { left: 8%; animation-delay: -2.6s; animation-duration: 15.2s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(2) { left: 17%; animation-delay: -7.5s; animation-duration: 16.8s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(3) { left: 27%; animation-delay: -1.2s; animation-duration: 15.7s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(4) { left: 37%; animation-delay: -9.1s; animation-duration: 17.9s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(5) { left: 46%; animation-delay: -4.1s; animation-duration: 14.8s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(6) { left: 55%; animation-delay: -10.4s; animation-duration: 17.1s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(7) { left: 64%; animation-delay: -5.9s; animation-duration: 15.9s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(8) { left: 73%; animation-delay: -11.6s; animation-duration: 16.6s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(9) { left: 81%; animation-delay: -3.3s; animation-duration: 15.1s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(10) { left: 88%; animation-delay: -8.7s; animation-duration: 17.4s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(11) { left: 94%; animation-delay: -6.8s; animation-duration: 14.9s; }
+  .brainrot-rain-word-layer .brainrot-rain-item:nth-child(12) { left: 98%; animation-delay: -12.1s; animation-duration: 16.3s; }
+
+  .glass-card {
+    background: rgba(31, 31, 35, 0.6);
+    -webkit-backdrop-filter: blur(24px);
+    backdrop-filter: blur(24px);
+  }
+
+  .neon-glow-primary {
+    box-shadow: 0 0 20px rgba(204, 151, 255, 0.3);
+  }
+
+  .neon-glow-secondary {
+    box-shadow: 0 0 20px rgba(0, 207, 252, 0.3);
+  }
+
+  .text-gradient {
+    @apply bg-linear-to-r from-primary to-secondary bg-clip-text text-transparent;
+  }
+}
+
+@keyframes brainrot-rain-fall-word {
+  0% {
+    transform: translate3d(0, -10vh, 0) rotate(-4deg);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.76;
+  }
+
+  80% {
+    opacity: 0.72;
+  }
+
+  100% {
+    transform: translate3d(14px, 120vh, 0) rotate(5deg);
+    opacity: 0;
+  }
+}
+
+@keyframes brainrot-rain-fall-emoji {
+  0% {
+    transform: translate3d(0, -12vh, 0) rotate(0deg) scale(0.92);
+    opacity: 0;
+  }
+
+  10% {
+    opacity: 0.85;
+  }
+
+  35% {
+    transform: translate3d(-10px, 35vh, 0) rotate(-10deg) scale(1);
+  }
+
+  70% {
+    transform: translate3d(12px, 78vh, 0) rotate(9deg) scale(1.02);
+    opacity: 0.82;
+  }
+
+  100% {
+    transform: translate3d(-6px, 122vh, 0) rotate(15deg) scale(0.96);
+    opacity: 0;
   }
 }

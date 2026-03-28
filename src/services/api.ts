@@ -8,6 +8,18 @@ export type TranslatePayload = {
   mode: TranslationMode;
 };
 
+export class ApiHttpError extends Error {
+  status: number;
+  code?: string;
+
+  constructor(message: string, status: number, code?: string) {
+    super(message);
+    this.name = 'ApiHttpError';
+    this.status = status;
+    this.code = code;
+  }
+}
+
 export async function translateText(payload: TranslatePayload) {
   const response = await fetch('/translate', {
     method: 'POST',
@@ -32,7 +44,11 @@ export async function fetchVoiceAudio(text: string, voiceMode: string) {
 
   if (!response.ok) {
     const error = await response.json().catch(() => ({}));
-    throw new Error(error.error || 'Voice generation failed.');
+    throw new ApiHttpError(
+      error.error || 'Voice generation failed.',
+      response.status,
+      error.code,
+    );
   }
 
   return response.blob();

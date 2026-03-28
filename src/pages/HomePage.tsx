@@ -1,6 +1,6 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { Copy, LoaderCircle, Volume2, WandSparkles } from 'lucide-react';
-import { fetchVoiceAudio, type TranslationStyle } from '../services/api';
+import { ApiHttpError, fetchVoiceAudio, translateText, type TranslationStyle } from '../services/api';
 import { voiceModes, type VoiceMode } from '../data/voiceModes';
 
 type SpeechSource = 'input' | 'output';
@@ -29,53 +29,6 @@ export function HomePage() {
   }, [inputText, outputText, speechSource]);
 
   useEffect(() => {
-    if (!inputText.trim()) {
-      setOutputText('');
-      setError('');
-      return;
-    }
-
-    const controller = new AbortController();
-    const timeout = setTimeout(async () => {
-      setIsLoading(true);
-      setError('');
-      setStatus('');
-      try {
-        const response = await fetch('/translate', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({
-            inputText,
-            intensity,
-            style,
-            mode,
-          }),
-          signal: controller.signal,
-        });
-
-        if (!response.ok) {
-          const err = await response.json().catch(() => ({}));
-          throw new Error(err.error || 'Translation failed.');
-        }
-
-        const data = (await response.json()) as { output: string; warning?: string; provider: string };
-        setOutputText(data.output || 'No output generated.');
-        setStatus(data.warning ? `${data.warning}` : `Provider: ${data.provider}`);
-      } catch (translateError) {
-        if ((translateError as Error).name === 'AbortError') return;
-        setError((translateError as Error).message || 'Something went wrong.');
-      } finally {
-        setIsLoading(false);
-      }
-    }, 420);
-
-    return () => {
-      controller.abort();
-      clearTimeout(timeout);
-    };
-  }, [inputText, intensity, style, mode]);
-
-  useEffect(() => {
     return () => {
       if (audioRef.current) {
         URL.revokeObjectURL(audioRef.current.src);
@@ -90,6 +43,53 @@ export function HomePage() {
     } catch {
       setError('Clipboard copy failed.');
     }
+  };
+
+  const runTranslation = async () => {
+    if (!inputText.trim()) {
+      setError('Please enter text before translating.');
+      return;
+    }
+
+    setIsLoading(true);
+    setError('');
+    setStatus('');
+
+    try {
+      const data = await translateText({
+        inputText,
+        intensity,
+        style,
+        mode,
+      });
+      setOutputText(data.output || 'No output generated.');
+      setStatus(data.warning ? `${data.warning}` : `Provider: ${data.provider}`);
+    } catch (translateError) {
+      setError((translateError as Error).message || 'Translation failed.');
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const speakWithBrowserTTS = (text: string) => {
+    if (!('speechSynthesis' in window)) {
+      throw new Error('Browser text-to-speech is not supported on this device.');
+    }
+
+    const utterance = new SpeechSynthesisUtterance(text);
+    if (voiceMode === 'Crazy') {
+      utterance.rate = 1.18;
+      utterance.pitch = 0.78;
+    } else if (voiceMode === 'Xomu') {
+      utterance.rate = 1.24;
+      utterance.pitch = 1.45;
+    } else {
+      utterance.rate = 1;
+      utterance.pitch = 1;
+    }
+    utterance.volume = 1;
+    window.speechSynthesis.cancel();
+    window.speechSynthesis.speak(utterance);
   };
 
   const playVoice = async () => {
@@ -107,7 +107,18 @@ export function HomePage() {
       await audio.play();
       setStatus(`Speaking in ${voiceMode} mode.`);
     } catch (voiceError) {
-      setError((voiceError as Error).message || 'Voice playback failed.');
+      const typedError = voiceError as ApiHttpError;
+
+      if (typedError.status === 402 || typedError.code === 'paid_plan_required') {
+        try {
+          speakWithBrowserTTS(textToSpeak);
+          setStatus('ElevenLabs paid voice blocked on free plan. Using browser voice fallback.');
+        } catch (fallbackError) {
+          setError((fallbackError as Error).message || 'Voice playback failed.');
+        }
+      } else {
+        setError(typedError.message || 'Voice playback failed.');
+      }
     } finally {
       setIsSpeaking(false);
     }
@@ -198,10 +209,20 @@ export function HomePage() {
               {isLoading ? <LoaderCircle className="animate-spin text-zinc-500" size={18} /> : null}
             </div>
             <div className="mt-3 h-56 overflow-auto rounded-xl border border-zinc-200 bg-white p-4 text-base leading-relaxed text-zinc-800">
-              {outputText || 'Start typing to see live translation.'}
+              {outputText || 'Click Translate to generate output.'}
             </div>
 
             <div className="mt-4 flex flex-wrap items-center gap-2">
+              <button
+                type="button"
+                onClick={runTranslation}
+                disabled={isLoading}
+                className="inline-flex items-center gap-2 rounded-full border border-emerald-700 bg-emerald-600 px-4 py-2 text-xs font-black uppercase tracking-[0.15em] text-white shadow-[0_10px_20px_-12px_rgba(5,120,96,0.8)] transition hover:bg-emerald-500 disabled:cursor-not-allowed disabled:opacity-70"
+              >
+                {isLoading ? <LoaderCircle size={14} className="animate-spin" /> : <WandSparkles size={14} />}
+                Translate
+              </button>
+
               <button
                 type="button"
                 onClick={copyOutput}
@@ -232,9 +253,6 @@ export function HomePage() {
                 Voice
               </button>
 
-              <span className="inline-flex items-center gap-2 rounded-full border border-zinc-200 bg-white/70 px-3 py-2 text-[11px] font-semibold uppercase tracking-[0.12em] text-zinc-500">
-                <WandSparkles size={13} /> Live mode on
-              </span>
             </div>
           </div>
         </div>

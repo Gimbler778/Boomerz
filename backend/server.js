@@ -24,9 +24,21 @@ const activeModel = process.env.OPENAI_MODEL || 'gpt-4.1-mini';
 const isGroqMode = (process.env.OPENAI_BASE_URL || '').includes('groq.com');
 
 const ELEVENLABS_VOICES = {
-  Crazy: 'OTMqA7lryJHXgAnPIQYt',
-  'Sigma voice': 'EiNlNiXeDU1pqqOPrYMO',
-  Lulz: '9yzdeviXkFddZ4Oz8Mok',
+  Crazy: {
+    id: 'SOYHLrjzK2X1ezoPC6cr',
+    stability: 0.08,
+    similarity_boost: 0.9,
+  },
+  'Sigma voice': {
+    id: 'pNInz6obpgDQGcFmaJgB',
+    stability: 0.4,
+    similarity_boost: 0.75,
+  },
+  Xomu: {
+    id: 'cgSgspJ2msm6clMCkdW9',
+    stability: 0.55,
+    similarity_boost: 0.6,
+  },
 };
 
 const VALID_STYLES = new Set(['Gen Z', 'Sigma', 'NPC', 'Meme overload']);
@@ -35,6 +47,18 @@ function clampIntensity(value) {
   const parsed = Number(value);
   if (Number.isNaN(parsed)) return 1;
   return Math.max(1, Math.min(3, Math.round(parsed)));
+}
+
+function normalizeCompareText(value) {
+  return value
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, ' ')
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
+function isEffectivelySameText(input, output) {
+  return normalizeCompareText(input) === normalizeCompareText(output);
 }
 
 app.get('/health', (_req, res) => {
@@ -101,6 +125,21 @@ app.post('/translate', async (req, res) => {
       throw new Error('Empty response from model');
     }
 
+    if (normalizedMode === 'toBrainrot' && isEffectivelySameText(inputText, output)) {
+      const rewritten = mockTranslate({
+        text: inputText,
+        intensity: normalizedIntensity,
+        style: normalizedStyle,
+        mode: normalizedMode,
+      });
+
+      return res.json({
+        output: rewritten,
+        provider: 'mock-postprocess',
+        warning: 'Model returned unchanged text; applied style-aware rewrite.',
+      });
+    }
+
     return res.json({
       output,
       provider: isGroqMode ? 'groq' : 'openai',
@@ -129,14 +168,14 @@ app.post('/voice', async (req, res) => {
     ? text.trim()
     : 'Skibidi rizz activated. This is a demo voice line.';
 
-  const voiceId = ELEVENLABS_VOICES[voiceMode] || ELEVENLABS_VOICES.Crazy;
+  const voiceConfig = ELEVENLABS_VOICES[voiceMode] || ELEVENLABS_VOICES.Crazy;
 
   if (!process.env.ELEVENLABS_API_KEY) {
     return res.status(503).json({ error: 'Missing ELEVENLABS_API_KEY on backend.' });
   }
 
   try {
-    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+    const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceConfig.id}`, {
       method: 'POST',
       headers: {
         'xi-api-key': process.env.ELEVENLABS_API_KEY,
@@ -147,8 +186,8 @@ app.post('/voice', async (req, res) => {
         text: inputText,
         model_id: 'eleven_multilingual_v2',
         voice_settings: {
-          stability: 0.4,
-          similarity_boost: 0.75,
+          stability: voiceConfig.stability,
+          similarity_boost: voiceConfig.similarity_boost,
           style: 0.8,
         },
       }),
@@ -156,7 +195,21 @@ app.post('/voice', async (req, res) => {
 
     if (!response.ok) {
       const errorBody = await response.text();
-      throw new Error(`ElevenLabs error ${response.status}: ${errorBody}`);
+      let parsed = null;
+
+      try {
+        parsed = JSON.parse(errorBody);
+      } catch {
+        parsed = null;
+      }
+
+      const message = parsed?.detail?.message || `ElevenLabs error ${response.status}`;
+      const code = parsed?.detail?.code || null;
+
+      return res.status(response.status).json({
+        error: message,
+        code,
+      });
     }
 
     const audioBuffer = Buffer.from(await response.arrayBuffer());
@@ -173,6 +226,17 @@ app.use((err, _req, res, _next) => {
   res.status(500).json({ error: 'Internal server error.' });
 });
 
-app.listen(port, () => {
+const server = app.listen(port, () => {
   console.log(`API server running at http://localhost:${port}`);
+});
+
+server.on('error', (err) => {
+  if (err?.code === 'EADDRINUSE') {
+    console.warn(`Port ${port} is already in use. Assuming backend is already running.`);
+    process.exit(0);
+    return;
+  }
+
+  console.error('Server startup error:', err);
+  process.exit(1);
 });
